@@ -11,7 +11,7 @@ For deployment purposes:
 
 Please also add the following credentials to the global domain of your organization's folder:
 - Heroku API key as secret text with ID 'HEROKU_API_KEY'
-- GitHub Token value as secret text with ID 'GITHUB_TOKEN'
+- GitHub Token value as secret text with ID 'TOKEN_GITHUB'
 */
 
 pipeline {
@@ -217,10 +217,10 @@ def getBranch() {
 }
 
 def createDeployment(ref, environment, description) {
-    withCredentials([[$class: 'StringBinding', credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN']]) {
+    withCredentials([[$class: 'StringBinding', credentialsId: 'TOKEN_GITHUB', variable: 'TOKEN_GITHUB']]) {
         def payload = JsonOutput.toJson(["ref": "${ref}", "description": "${description}", "environment": "${environment}", "required_contexts": []])
         def apiUrl = "https://api.github.com/repos/${getRepoSlug()}/deployments"
-        def response = sh(returnStdout: true, script: "curl -s -H \"Authorization: Token ${env.GITHUB_TOKEN}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}").trim()
+        def response = sh(returnStdout: true, script: "curl -s -H \"Authorization: Token ${env.TOKEN_GITHUB}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}").trim()
         def jsonSlurper = new JsonSlurper()
         def data = jsonSlurper.parseText("${response}")
         return data.id
@@ -229,26 +229,26 @@ def createDeployment(ref, environment, description) {
 
 void createRelease(tagName, createdAt) {
     echo "creating release"
-    withCredentials([[$class: 'StringBinding', credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN']]) {
+    withCredentials([[$class: 'StringBinding', credentialsId: 'TOKEN_GITHUB', variable: 'TOKEN_GITHUB']]) {
         def body = "**Created at:** ${createdAt}\n**Deployment job:** [${env.BUILD_NUMBER}](${env.BUILD_URL})\n**Environment:** [${env.HEROKU_PRODUCTION}](https://dashboard.heroku.com/apps/${env.HEROKU_PRODUCTION})"
         def payload = JsonOutput.toJson(["tag_name": "v${tagName}", "name": "${env.HEROKU_PRODUCTION} - v${tagName}", "body": "${body}"])
         def apiUrl = "https://api.github.com/repos/${getRepoSlug()}/releases"
-        def response = sh(returnStdout: true, script: "curl -s -H \"Authorization: Token ${env.GITHUB_TOKEN}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}").trim()
+        def response = sh(returnStdout: true, script: "curl -s -H \"Authorization: Token ${env.TOKEN_GITHUB}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}").trim()
     }
 }
 
 void setDeploymentStatus(deploymentId, state, targetUrl, description) {
     echo "setting deployment status"
-    withCredentials([[$class: 'StringBinding', credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN']]) {
+    withCredentials([[$class: 'StringBinding', credentialsId: 'TOKEN_GITHUB', variable: 'TOKEN_GITHUB']]) {
         def payload = JsonOutput.toJson(["state": "${state}", "target_url": "${targetUrl}", "description": "${description}"])
         def apiUrl = "https://api.github.com/repos/${getRepoSlug()}/deployments/${deploymentId}/statuses"
-        def response = sh(returnStdout: true, script: "curl -s -H \"Authorization: Token ${env.GITHUB_TOKEN}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}").trim()
+        def response = sh(returnStdout: true, script: "curl -s -H \"Authorization: Token ${env.TOKEN_GITHUB}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}").trim()
         echo "deployment response: ${response}"
     }
 }
 
 void setBuildStatus(context, message, state) {
-    // partially hard coded URL because of https://issues.jenkins-ci.org/browse/JENKINS-36961, adjust to your own GitHub instance
+    // partially hard coded URL because of https://issues.jenkins-ci.org`owse/JENKINS-36961, adjust to your own GitHub instance
     step([
             $class: "GitHubCommitStatusSetter",
             contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context],
