@@ -26,6 +26,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
+	      echo "ref: ${env.GIT_COMMIT}"
         sh 'mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dcheckstyle.skip=true -B -V'
         stash includes: '**/target/*.jar', name: 'app'
       }
