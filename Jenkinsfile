@@ -26,7 +26,6 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-	      echo "ref: ${env.GIT_COMMIT}"
         sh 'mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dcheckstyle.skip=true -B -V'
         stash includes: '**/target/*.jar', name: 'app'
       }
@@ -126,7 +125,8 @@ def preview() {
     stage name: 'Deploy to Preview env', concurrency: 1
     step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
     def herokuApp = "${env.HEROKU_PREVIEW}"
-    def id = createDeployment(getBranch(), "preview", "Deploying branch to test")
+    def ref = "${env.GIT_COMMIT}"
+    def id = createDeployment(ref, "preview", "Deploying branch to test")
     echo "Deployment ID: ${id}"
     if (id != null) {
         setDeploymentStatus(id, "pending", "https://${herokuApp}.herokuapp.com/", "Pending deployment to test");
