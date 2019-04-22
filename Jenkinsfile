@@ -48,9 +48,8 @@ pipeline {
     }
     stage('Deploy') {
       environment {
-        HEROKU_PREVIEW='jenkins-daze-preview'
-        //HEROKU_PRODUCTION='jenkins-daze-demo'
-	      HEROKU_PRODUCTION='stark-sierra-60634'
+        HEROKU_PREVIEW='jenkins-days-nyc-2019-preview'
+	HEROKU_PRODUCTION='jenkins-days-nyc-2019-prod'
       }
       steps {
         deploy()
