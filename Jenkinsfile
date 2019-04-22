@@ -205,7 +205,7 @@ def getRepoSlug() {
     tokens = "${env.JOB_NAME}".tokenize('/')
     org = tokens[tokens.size()-3]
     repo = tokens[tokens.size()-2]
-    return "githubcustomers/reading-time"
+    return "birds-of-a-feather/reading-time"
     //return "${org}/${repo}"
 }
 
