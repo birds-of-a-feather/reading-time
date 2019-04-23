@@ -125,7 +125,8 @@ def preview() {
     stage name: 'Deploy to Preview env', concurrency: 1
     step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
     def herokuApp = "${env.HEROKU_PREVIEW}"
-    def id = createDeployment(getBranch(), "preview", "Deploying branch to test")
+    def ref = "${env.GIT_COMMIT}"
+    def id = createDeployment(ref, "preview", "Deploying branch to test")
     echo "Deployment ID: ${id}"
     if (id != null) {
         setDeploymentStatus(id, "pending", "https://${herokuApp}.herokuapp.com/", "Pending deployment to test");
@@ -205,7 +206,7 @@ def getRepoSlug() {
     tokens = "${env.JOB_NAME}".tokenize('/')
     org = tokens[tokens.size()-3]
     repo = tokens[tokens.size()-2]
-    return "githubcustomers/reading-time"
+    return "birds-of-a-feather/reading-time"
     //return "${org}/${repo}"
 }
 
