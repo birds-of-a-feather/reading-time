@@ -1,5 +1,5 @@
 # Reading Time
-Reading Time is a web application that lists staff recommended books, and stuff. 
+Reading Time is a web application that lists staff recommended books, and stuff. update2
 
 ## Installing
 
