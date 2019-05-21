@@ -48,8 +48,8 @@ pipeline {
     }
     stage('Deploy') {
       environment {
-        HEROKU_PREVIEW='jenkins-days-nyc-2019-preview'
-	HEROKU_PRODUCTION='jenkins-days-nyc-2019-prod'
+        HEROKU_PREVIEW = credentials('HEROKU_PREVIEW')
+	HEROKU_PRODUCTION = credentials('HEROKU_PRODUCTION')
       }
       steps {
         deploy()
