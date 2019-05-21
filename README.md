@@ -3,6 +3,8 @@ Reading Time is a web application that lists staff recommended books, and stuff.
 
 ## Installing
 
+@ Lumber Exchange
+
 ### Prerequisites
 Reading Time requires Java and [Maven](https://maven.apache.org/). It uses an embedded Tomcat servlet container. To test if you have Java and Maven installed open a terminal and type:
 ```
